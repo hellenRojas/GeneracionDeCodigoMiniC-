@@ -33,7 +33,7 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
             public bool banderaCambiarTipoGlob = true;
             public bool breakS = false;
             public int tipoDeVariableDesignator = 0; // 0 = variable ---- 1 = arreglo ---- 2 = clase
-
+            public bool esArray = false;
 
 
 
@@ -314,7 +314,7 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
 public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext context)
 {
    string tipoVar =(string)Visit(context.type());
-   TypeBuilder claseAct = varClassList.Last();
+   TypeBuilder claseAct;
    if(tipoVar == "int"){
        if (nivelAct == 0)
        {
@@ -327,6 +327,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        }
        else if (nivelAct == 2)
        {
+            claseAct = varClassList.Last();
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
                CPVar nuevListVarClass;
@@ -392,6 +393,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        {
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
+               claseAct = varClassList.Last();
                CPVar nuevListVarClass;
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
@@ -455,6 +457,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        {
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
+               claseAct = varClassList.Last();
                CPVar nuevListVarClass;
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
@@ -518,6 +521,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        {
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
+               claseAct = varClassList.Last();
                CPVar nuevListVarClass;
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
@@ -581,6 +585,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        {
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
+               claseAct = varClassList.Last();
                CPVar nuevListVarClass;
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
@@ -648,6 +653,7 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
        {
            for (int i = 0; i <= context.ID().Length - 1; i++)
            {
+               claseAct = varClassList.Last();
                CPVar nuevListVarClass;
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
@@ -1209,7 +1215,92 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
     //FALTA
     public override object VisitForeachStatAST([NotNull] Parser1.ForeachStatASTContext context)
     {
+        // CICLO_FOREACH PIZQ type ID IN expr PDER statement												#foreachStatAST
+        string tipo = Visit(context.type()).ToString();
+        string nombVar = Visit(context.type()).ToString();
+        if(tipo == "int"){
+            LocalBuilder varLoc = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
+            varLocalMethod v = new varLocalMethod(nombVar,varLoc,tipo);
+            buscarvaMethodList_varMETHOD(MethodMain.Name).listVar.Add(v);
+
+            LocalBuilder len = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
+            LocalBuilder arr = mainGen.DeclareLocal(typeof(int[]));//Declaro 2 variables locales 0
+            LocalBuilder i = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
+            Label k = mainGen.DefineLabel();
+            Label p = mainGen.DefineLabel();
+            Label j = mainGen.DefineLabel();
+
+            Visit(context.expr());
+
+            mainGen.Emit(OpCodes.Stloc, arr);
+            mainGen.Emit(OpCodes.Ldloc, arr);
+            mainGen.Emit(OpCodes.Ldlen);
+            mainGen.Emit(OpCodes.Stloc, len);
+            mainGen.Emit(OpCodes.Ldc_I4_0);
+            mainGen.Emit(OpCodes.Stloc,i);
+
+            //Condicion
+            mainGen.MarkLabel(p);
+            mainGen.Emit(OpCodes.Ldloc, i);
+            mainGen.Emit(OpCodes.Ldloc, len);
+            mainGen.Emit(OpCodes.Clt);
+
+            mainGen.Emit(OpCodes.Brtrue, k);
+            mainGen.Emit(OpCodes.Br, j);
         
+            mainGen.MarkLabel(k);
+            // se reemplaza el var de x
+            mainGen.Emit(OpCodes.Ldloc, arr);
+            mainGen.Emit(OpCodes.Ldloc, i);
+            mainGen.Emit(OpCodes.Ldelem_I4);
+            LocalBuilder t = buscarvaMethodList_var(nombVar).var;
+
+
+            mainGen.Emit(OpCodes.Stloc,t);
+            Visit(context.statement());
+
+            //DECREMENTAR
+            mainGen.Emit(OpCodes.Ldloc, i);
+            mainGen.Emit(OpCodes.Ldc_I4_1);
+            mainGen.Emit(OpCodes.Add);
+            mainGen.Emit(OpCodes.Stloc,i);
+            mainGen.Emit(OpCodes.Br, p);
+
+            mainGen.MarkLabel(j);
+
+
+
+        }
+          if(tipo == "char"){
+            LocalBuilder varLoc = mainGen.DeclareLocal(typeof(char));//Declaro 2 variables locales 0
+            varLocalMethod v = new varLocalMethod(nombVar,varLoc,tipo);
+            buscarvaMethodList_varMETHOD(MethodMain.Name).listVar.Add(v);
+        }
+
+      
+
+        /*
+             mainGen.Emit(OpCodes.Stloc, tam);
+            mainGen.Emit(OpCodes.Ldloc, localVar.var);
+            mainGen.Emit(OpCodes.Ldloc, tam);
+            Visit(context.expr());
+            mainGen.Emit(OpCodes.Stelem_I4);
+
+       */
+        
+
+        /*
+        char[] df = new char[3];
+        df[1] = 'd';
+        df[1] = 'd';
+        df[1] = 'e';
+        foreach(char t in df){
+         }
+           */
+
+
+
+
         return null;
     }
 
@@ -1612,8 +1703,8 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
         varLocalMethod localVar = buscarvaMethodList_var(idDesig);
         varGlobalMethod globalVar = buscarvarGlobList(idDesig);
         FieldBuilder ConstlVar = buscarconstGlobList(idDesig);
-       // if (tipoDeVariableDesignator == 0)
-       // {
+        if (tipoDeVariableDesignator == 0)
+        {
             
             if (localVar != null)
             {
@@ -1641,7 +1732,7 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
                 mainGen.Emit(OpCodes.Ldfld, ConstlVar);
 
             }
-       // }
+        }
         
         if (tipoDeVariableDesignator == 1)
         {
@@ -1653,6 +1744,13 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
                    {
                        tipoAct = localVar.tipo;
                    }
+
+                    if(tipoAct == "int[]"){
+                        tipoAct = "int";
+                    }
+                    else{
+                        tipoAct = "char";
+                    }
 
                    mainGen.Emit(OpCodes.Ldloc, localVar.var);
                    mainGen.Emit(OpCodes.Ldloc, tam);
