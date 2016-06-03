@@ -338,13 +338,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(name, typeof(int), FieldAttributes.Public);
                varClass varGlob = new varClass(v,"int");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+             
 
            }
                
@@ -364,13 +365,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                 }  
                 else {
                     nuevListVarMethod= new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                    vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                 }
                    
                  
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"int");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+       
 
            }
 
@@ -402,13 +404,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(context.ID(i).GetText(), typeof(char), FieldAttributes.Public);
                varClass varGlob = new varClass(v, "char");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+              
            }
        }
        else
@@ -429,13 +432,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                   vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                }
 
 
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"char");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+         
 
            }
 
@@ -466,13 +470,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(context.ID(i).GetText(), typeof(float), FieldAttributes.Public);
                varClass varGlob = new varClass(v, "float");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+    
 
            }
        }
@@ -493,13 +498,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                   vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                }
 
 
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"float");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+    
 
            }
        }
@@ -526,17 +532,19 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                if (buscarvarClassList_varCLASS(varClassList.Last().Name) != null)
                {
                    nuevListVarClass = buscarvarClassList_varCLASS(varClassList.Last().Name);
+
                }
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(context.ID(i).GetText(), typeof(bool), FieldAttributes.Public);
                varClass varGlob = new varClass(v, "boolean");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+            
            }
        }
        else
@@ -557,13 +565,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                   vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                }
 
 
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"boolean");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+        
 
            }
 
@@ -594,13 +603,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(name, typeof(int[]), FieldAttributes.Private);
                varClass varGlob = new varClass(v, "int[]");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+   
 
            }
 
@@ -623,13 +633,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                   vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                }
 
 
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"int[]");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+   
 
            }
 
@@ -662,13 +673,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarClass = new CPVar(claseAct.Name);
+                   varClassList_var.Add(nuevListVarClass);
                }
 
                string name = context.ID(i).ToString();
                FieldBuilder v = claseAct.DefineField(context.ID(i).GetText(), typeof(char[]), FieldAttributes.Public);
                varClass varGlob = new varClass(v, "char[]");
                nuevListVarClass.listVar.Add(varGlob);
-               varClassList_var.Add(nuevListVarClass);
+               
            }
        }
        else
@@ -689,13 +701,14 @@ public override object VisitVarDeclAST([NotNull] Parser1.VarDeclASTContext conte
                else
                {
                    nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                   vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
                }
 
 
 
                varLocalMethod varMethod = new varLocalMethod(name, varLoc,"char[]");//Se guarda en un objeto la variable local con su respectivo nombre
                nuevListVarMethod.listVar.Add(varMethod); // Se agrega la lista de variables de esa clase
-               vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+          
 
            }
 
@@ -1217,12 +1230,26 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
     {
         // CICLO_FOREACH PIZQ type ID IN expr PDER statement												#foreachStatAST
         string tipo = Visit(context.type()).ToString();
-        string nombVar = Visit(context.type()).ToString();
+        string nombVar = context.ID().ToString();
         if(tipo == "int"){
             LocalBuilder varLoc = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
-            varLocalMethod v = new varLocalMethod(nombVar,varLoc,tipo);
-            buscarvaMethodList_varMETHOD(MethodMain.Name).listVar.Add(v);
+          
 
+            MVar nuevListVarMethod;
+            if (buscarvaMethodList_varMETHOD(MethodMain.Name) != null)
+            {
+                nuevListVarMethod = buscarvaMethodList_varMETHOD(MethodMain.Name);
+            }
+            else
+            {
+                nuevListVarMethod = new MVar(MethodMain.Name);// Se crea un elemento con la lista de variables y el nombre del metodo
+                vaMethodList_var.Add(nuevListVarMethod); //Se agrega a la lista general de varaibles de metodos
+
+            }
+
+            varLocalMethod v = new varLocalMethod(nombVar, varLoc, tipo);
+            nuevListVarMethod.listVar.Add(v); // Se agrega la lista de variables de esa clase
+           
             LocalBuilder len = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
             LocalBuilder arr = mainGen.DeclareLocal(typeof(int[]));//Declaro 2 variables locales 0
             LocalBuilder i = mainGen.DeclareLocal(typeof(int));//Declaro 2 variables locales 0
@@ -1267,7 +1294,6 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
             mainGen.Emit(OpCodes.Br, p);
 
             mainGen.MarkLabel(j);
-
 
 
         }
