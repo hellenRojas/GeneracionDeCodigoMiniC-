@@ -1294,8 +1294,9 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
             mainGen.Emit(OpCodes.Br, p);
 
             mainGen.MarkLabel(j);
-
-
+            //ELIMINA LA VARIABLE 
+            //nuevListVarMethod.listVar.Find(item => ((varLocalMethod)item).nombreVar.Equals(nombVar));
+            nuevListVarMethod.listVar.Remove(v);
         }
           if(tipo == "char"){
             LocalBuilder varLoc = mainGen.DeclareLocal(typeof(char));//Declaro 2 variables locales 0
