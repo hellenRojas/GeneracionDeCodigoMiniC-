@@ -240,6 +240,34 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
         ¨*/
 
 
+        string idMethod = "sumar";
+         System.Type[] ParamTypes = new Type[] { };
+         MethodAct = ClassProgram.DefineMethod(idMethod, MethodAttributes.Public | MethodAttributes.Static, typeof(int), ParamTypes);
+
+
+
+       MethodActGen = MethodAct.GetILGenerator();
+       MethodActGen.Emit(OpCodes.Ldc_I4, 1);
+       MethodActGen.Emit(OpCodes.Ldc_I4, 4);
+       MethodActGen.Emit(OpCodes.Add);
+       MethodActGen.Emit(OpCodes.Ret);
+
+
+       
+            object[] inputValsList = new object[] { };
+       //object magicClassObject = GenConstr.Invoke(new object[] { });
+       //Type tipo = Type.GetType(ClassProgram.Name);
+         
+
+        /*
+      
+
+       Metodo.Invoke(magicClassObject, new object[] { });
+ 
+        */
+
+         
+
         
         MethodInfo readLineMI = typeof(Console).GetMethod(
                           "ReadLine",
@@ -248,6 +276,18 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
         mainGen.Emit(OpCodes.Pop);
         mainGen.Emit(OpCodes.Ret);
         ClassProgram.CreateType();
+
+        Type typeClass = ClassProgram.GetTypeInfo();
+
+        //  MethodInfo Metodo = tipo.GetMethod("sumar");
+        int c = (int)typeClass.InvokeMember("sumar",
+              BindingFlags.InvokeMethod | BindingFlags.Public |
+              BindingFlags.Static,
+              null,
+              null,
+              inputValsList);
+        Console.WriteLine(c);
+
         GenAsmBldr.SetEntryPoint(MethodMain);
         GenAsmBldr.Save(asmFileName);
         
