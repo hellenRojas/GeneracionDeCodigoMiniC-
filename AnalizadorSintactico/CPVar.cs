@@ -10,11 +10,14 @@ namespace AnalizadorSintactico
     public class CPVar
     {
         public string clase;
+        public ConstructorBuilder cons;
         public List<varClass> listVar;
 
-        public CPVar(string clas)
+
+        public CPVar(string clas,ConstructorBuilder c)
         {
             clase = clas;
+            cons = c;
             listVar = new List<varClass>();
 
         }
