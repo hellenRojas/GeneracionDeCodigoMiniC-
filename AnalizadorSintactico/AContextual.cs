@@ -993,7 +993,14 @@ class AContextual : Parser1BaseVisitor<Object>
                 tipo1 = tipo2;
 
             }
-            return tipo1;
+            if (tipo1 == null)
+            {
+              throw new Exception("Linea: " + lineaActual + " -> No existe la variable "+ varAct);
+            }
+            else{
+                 return tipo1;
+            }
+           
         }
 
         catch (Exception e)
@@ -1347,7 +1354,14 @@ class AContextual : Parser1BaseVisitor<Object>
         }
         else
         {
-              TablaSimbolos.ElementoG elem = table.buscarPNivel(context.ID(0).GetText(), nivGloblal);
+            TablaSimbolos.ElementoG elem = null; 
+              if (nivGloblal==0 )
+              {
+                   elem = table.buscarPNivel(context.ID(0).GetText(), 1);
+               }
+              if (elem == null) {
+                  elem = table.buscarPNivel(context.ID(0).GetText(), nivGloblal);
+              }
             /*  if (elem == null) {
                 elem = table.buscarPNivel(context.ID(0).GetText(), 1);
               }

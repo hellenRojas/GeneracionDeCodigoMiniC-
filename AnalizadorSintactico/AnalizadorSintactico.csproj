@@ -84,6 +84,7 @@
     <Compile Include="varClass.cs" />
     <Compile Include="varGlobalMethod.cs" />
     <Compile Include="varLocalMethod.cs" />
+    <Compile Include="varParams.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

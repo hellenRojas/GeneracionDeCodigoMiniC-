@@ -7,21 +7,17 @@ using System.Threading.Tasks;
 
 namespace AnalizadorSintactico
 {
-    public class methodParams
+    //Clase q guarda las variables locales de los métodos(Individualmente)
+    public class varParams
     {
-        public string metodo;
+        public ParameterBuilder var;
         public string tipo;
-        public List<varParams> listParams;
 
-
-        public methodParams(string meto,string t)
+        public varParams(ParameterBuilder v, string t)
         {
-            metodo = meto;
+            var = v;
             tipo = t;
-            listParams = new List<varParams>();
 
         }
-
-
     }
 }
