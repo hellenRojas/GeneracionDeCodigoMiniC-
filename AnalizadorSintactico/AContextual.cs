@@ -1025,6 +1025,8 @@ class AContextual : Parser1BaseVisitor<Object>
                 TablaMetodos.ElementoMet met = tableMethods.buscarPNombre(nombreMetodo_Llamada);
                 string tipoMethod = met.tipo;//tipo del metodo
                 string[] arrTiposParam = null;
+
+                nivGloblal = 1;
                 if (context.actPars() != null)
                 {
                     arrTiposParam = (string[])Visit(context.actPars());// arreglo de tipos de parametros
@@ -1354,18 +1356,23 @@ class AContextual : Parser1BaseVisitor<Object>
         }
         else
         {
-            TablaSimbolos.ElementoG elem = null; 
-              if (nivGloblal==0 )
-              {
-                   elem = table.buscarPNivel(context.ID(0).GetText(), 1);
-               }
-              if (elem == null) {
-                  elem = table.buscarPNivel(context.ID(0).GetText(), nivGloblal);
-              }
-            /*  if (elem == null) {
-                elem = table.buscarPNivel(context.ID(0).GetText(), 1);
-              }
-            */
+            TablaSimbolos.ElementoG elem = null;
+            TablaSimbolos.ElementoG elemGlob = null;
+            TablaSimbolos.ElementoG elemLoc = null;
+             
+            elem = table.buscarPNivel(context.ID(0).GetText(), 0);
+
+
+            elemLoc = table.buscarPNivel(context.ID(0).GetText(), 1);
+
+            if (elemLoc != null)
+            {
+                elem = elemLoc;
+            }
+            else if(elemGlob !=null){
+
+                elem = elemGlob;
+            }
             TablaMetodos.ElementoMet elem2 = tableMethods.buscarPNombre(context.ID(0).ToString());
             if (elem != null)
             {

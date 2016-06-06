@@ -82,6 +82,7 @@
     <Compile Include="TablaMetodos.cs" />
     <Compile Include="TablaSimbolos.cs" />
     <Compile Include="varClass.cs" />
+    <Compile Include="varConst.cs" />
     <Compile Include="varGlobalMethod.cs" />
     <Compile Include="varLocalMethod.cs" />
     <Compile Include="varParams.cs" />

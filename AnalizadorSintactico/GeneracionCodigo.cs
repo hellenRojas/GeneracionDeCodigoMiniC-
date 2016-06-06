@@ -15,7 +15,7 @@ using System.Text;
 
 class  GeneracionCodigo : Parser1BaseVisitor<Object>
 {
-            List<FieldBuilder> constGlobList;// Lista de constantes
+            List<varConst> constGlobList;// Lista de constantes
             List<varGlobalMethod> varGlobList; // Lista de variables
 
             List<TypeBuilder> varClassList; // Lista de clases
@@ -68,7 +68,7 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
   
     public GeneracionCodigo()
     {
-        constGlobList = new List<FieldBuilder>();
+        constGlobList = new List<varConst>();
         varGlobList = new List<varGlobalMethod>();
 
         varMethList = new List<MethodBuilder>();
@@ -93,9 +93,9 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
         
     }
 
-    FieldBuilder buscarconstGlobList(string nombre)
+    varConst buscarconstGlobList(string nombre)
     {
-        return (FieldBuilder)constGlobList.Find(item => ((FieldBuilder)item).Name.Equals(nombre));
+        return (varConst)constGlobList.Find(item => ((varConst)item).var.Name.Equals(nombre));
     }
 
 
@@ -347,12 +347,14 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
         if (tipoVar == "int")
         {
                 int val = int.Parse(context.NUMBER().ToString());
-                FieldBuilder varGlob = ClassProgram.DefineField(context.ID().ToString(), typeof(int), FieldAttributes.Private);        
+                FieldBuilder varGlob = ClassProgram.DefineField(context.ID().ToString(), typeof(int), FieldAttributes.Private);  
+      
                 constGen.Emit(OpCodes.Ldarg_0);
                 constGen.Emit(OpCodes.Ldc_I4,val);
                 constGen.Emit(OpCodes.Stfld, varGlob);
                // constGen.Emit(OpCodes.Ldfld, varGlob);
-                constGlobList.Add(varGlob);
+                varConst vc = new varConst(varGlob,"int");
+                constGlobList.Add(vc);
               
                 /*
                 MethodInfo writeMI = typeof(Console).GetMethod(
@@ -370,7 +372,7 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
         }
         else if (tipoVar == "char")
         {
-
+            
             string var  = context.CharConst().GetText();
             string resultado = var.Replace("'", "");
             int val = char.Parse(resultado);
@@ -379,19 +381,10 @@ class  GeneracionCodigo : Parser1BaseVisitor<Object>
             constGen.Emit(OpCodes.Ldc_I4, val);
             constGen.Emit(OpCodes.Stfld, varGlob);
             // constGen.Emit(OpCodes.Ldfld, varGlob);
-            constGlobList.Add(varGlob);
+            varConst vc = new varConst(varGlob, "char");
+            constGlobList.Add(vc);
 
-            /*
-           MethodInfo writeMI = typeof(Console).GetMethod(
-                                         "WriteLine",
-                                         new Type[] { typeof(int) });
-
-         
-           MethodActGen.Emit(OpCodes.Newobj, GenConstr);
-           MethodActGen.Emit(OpCodes.Ldfld, constGlobList[0]);
-           MethodActGen.EmitCall(OpCodes.Call, writeMI, null);
-          
-            */
+           
    }
        
 
@@ -920,18 +913,20 @@ public override object VisitMethodDeclAST([NotNull] Parser1.MethodDeclASTContext
        {
            tipo = "void";
            MethodAct = ClassProgram.DefineMethod(idMethod, MethodAttributes.Public | MethodAttributes.Static, typeof(void), ParamTypes);
-
-           if (listTempParams!= null)
+           methodParams nuevaClaseParams = new methodParams(idMethod, "void");
+           if (listTempParams != null)
            {
-               methodParams nuevaClaseParams = new methodParams(idMethod, "void");
+
                for (int i = 0; i < listTempParams.Length; i++)
                {
                    ParameterBuilder Param = MethodAct.DefineParameter(i, ParameterAttributes.In, listTempParams[i].idVar);
                    varParams varP = new varParams(Param, listTempParams[i].tipo);
                    nuevaClaseParams.listParams.Add(varP); // Agrego los parametros a la lista de parametros de un elemento de la lista
                }
-               vaMethodList_params.Add(nuevaClaseParams);
+             
            }
+           vaMethodList_params.Add(nuevaClaseParams);
+        
        }
        else
        {
@@ -966,18 +961,19 @@ public override object VisitMethodDeclAST([NotNull] Parser1.MethodDeclASTContext
            }
            MethodAct.InitLocals = true;
 
-
+           methodParams nuevaClaseParams = new methodParams(idMethod, tipo);
            if (listTempParams != null)
            {
-               methodParams nuevaClaseParams = new methodParams(idMethod, tipo);
+
                for (int i = 0; i < listTempParams.Length; i++)
                {
                    ParameterBuilder Param = MethodAct.DefineParameter(i, ParameterAttributes.In, listTempParams[i].idVar);
                    varParams varP = new varParams(Param, listTempParams[i].tipo);
                    nuevaClaseParams.listParams.Add(varP); // Agrego los parametros a la lista de parametros de un elemento de la lista
                }
-               vaMethodList_params.Add(nuevaClaseParams);
+          
            }
+           vaMethodList_params.Add(nuevaClaseParams);
 
        }
           MethodActGen = MethodAct.GetILGenerator(); // Hago el ILGenerator para hacer los emits
@@ -1373,8 +1369,7 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
     public override object VisitForStatAST([NotNull] Parser1.ForStatASTContext context)
     {//VERIFICAR BREAK
         breaks = MethodActGen.DeclareLocal(typeof(int));
-        MethodActGen.Emit(OpCodes.Ldc_I4_0);
-        MethodActGen.Emit(OpCodes.Stloc, breaks);
+ 
 
         if (context.condition() != null && context.statement() != null)
         {
@@ -1616,26 +1611,7 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
            
         }
 
-      
 
-        /*
-             MethodActGen.Emit(OpCodes.Stloc, tam);
-            MethodActGen.Emit(OpCodes.Ldloc, localVar.var);
-            MethodActGen.Emit(OpCodes.Ldloc, tam);
-            Visit(context.expr());
-            MethodActGen.Emit(OpCodes.Stelem_I4);
-
-       */
-        
-
-        /*
-        char[] df = new char[3];
-        df[1] = 'd';
-        df[1] = 'd';
-        df[1] = 'e';
-        foreach(char t in df){
-         }
-           */
 
 
 
@@ -1662,7 +1638,7 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
         varParams param = buscarvaMethodList_params(idDesig);
         varLocalMethod localVar = buscarvaMethodList_var(idDesig);
         varGlobalMethod globalVar = buscarvarGlobList(idDesig);
-        FieldBuilder ConstlVar = buscarconstGlobList(idDesig);
+        varConst ConstlVar = buscarconstGlobList(idDesig);
         if (tipoDeVariableDesignator == 0)
         {
 
@@ -1673,43 +1649,34 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
                     tipoAct = localVar.tipo;
                 }
 
-                if (tipoAct.Equals("int"))
-                {
-
+               
                     readLineMI = typeof(Console).GetMethod(
                             "ReadLine",
                             new Type[0]);
 
-                    MethodActGen.EmitCall(OpCodes.Call, readLineMI, null);
-
+                    MethodActGen.EmitCall(OpCodes.Call, readLineMI,null);
+                    //MethodActGen.Emit(OpCodes.Pop);
+                if (tipoAct.Equals("int"))
+                {
 
                 }
 
                 else if (tipoAct.Equals("float"))
                 {
-                    readLineMI = typeof(Console).GetMethod(
-                                             "Readline",
-                                             new Type[] { typeof(float) });
+                  
                 }
                 else if (tipoAct.Equals("char"))
                 {
 
-                    readLineMI = typeof(Console).GetMethod(
-                                             "Readline",
-                                             new Type[] { typeof(char) });
-
                 }
                 else
                 {
-                    readLineMI = typeof(Console).GetMethod(
-                                             "Readline",
-                                             new Type[] { typeof(bool) });
+          
                 }
 
-                
-                MethodActGen.EmitCall(OpCodes.Call, readLineMI, null);
-                MethodActGen.Emit(OpCodes.Stloc);
 
+
+                MethodActGen.Emit(OpCodes.Stloc, localVar.var);
             }
             else if (param != null)
             {
@@ -1718,24 +1685,74 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
                     tipoAct = param.tipo;
                 }
 
-                MethodActGen.Emit(OpCodes.Ldarg, param.var.Position);
+                readLineMI = typeof(Console).GetMethod(
+                        "ReadLine",
+                        new Type[0]);
+
+                MethodActGen.EmitCall(OpCodes.Call, readLineMI, null);
+
+
+
+                if (tipoAct.Equals("int"))
+                {
+
+                }
+
+                else if (tipoAct.Equals("float"))
+                {
+
+                }
+                else if (tipoAct.Equals("char"))
+                {
+
+                }
+                else
+                {
+
+                }
+
+
+                MethodActGen.Emit(OpCodes.Starg, param.var.Position);
 
             }
             else if (globalVar != null)
             {
-                if (banderaCambiarTipoGlob == true)
+
+                readLineMI = typeof(Console).GetMethod(
+                        "ReadLine",
+                        new Type[0]);
+
+                MethodActGen.EmitCall(OpCodes.Call, readLineMI, null);
+
+                MethodActGen.Emit(OpCodes.Pop);
+
+                if (tipoAct.Equals("int"))
                 {
-                    tipoAct = globalVar.tipo;
+
                 }
 
-                MethodActGen.Emit(OpCodes.Ldsfld, globalVar.var);
+                else if (tipoAct.Equals("float"))
+                {
+
+                }
+                else if (tipoAct.Equals("char"))
+                {
+
+                }
+                else
+                {
+
+                }
+
+
+                MethodActGen.Emit(OpCodes.Stsfld, globalVar.var);
 
             }
 
             else if (ConstlVar != null)
             {
                 MethodActGen.Emit(OpCodes.Newobj, GenConstr);
-                MethodActGen.Emit(OpCodes.Ldfld, ConstlVar);
+                MethodActGen.Emit(OpCodes.Ldfld, ConstlVar.var);
 
             }
 
@@ -2127,7 +2144,7 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
             varParams param = buscarvaMethodList_params(idDesig);
             varLocalMethod localVar = buscarvaMethodList_var(idDesig);
             varGlobalMethod globalVar = buscarvarGlobList(idDesig);
-            FieldBuilder ConstlVar = buscarconstGlobList(idDesig);
+            varConst ConstlVar = buscarconstGlobList(idDesig);
             if (tipoDeVariableDesignator == 0)
             {
 
@@ -2164,8 +2181,14 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
      
                 else if (ConstlVar != null)
                 {
+                    if (banderaCambiarTipoGlob == true)
+                    {
+                        tipoAct = ConstlVar.tipo;
+                    }
+
+
                     MethodActGen.Emit(OpCodes.Newobj, GenConstr);
-                    MethodActGen.Emit(OpCodes.Ldfld, ConstlVar);
+                    MethodActGen.Emit(OpCodes.Ldfld, ConstlVar.var);
 
                 }
 
@@ -2390,7 +2413,18 @@ public override object VisitDesignatorStatAST([NotNull] Parser1.DesignatorStatAS
             varParams param = buscarvaMethodList_params(idDesig);
             varLocalMethod localVar = buscarvaMethodList_var(idDesig);
             varGlobalMethod globalVar = buscarvarGlobList(idDesig);
-            FieldBuilder ConstlVar = buscarconstGlobList(idDesig);
+            //varConst ConstlVar = buscarconstGlobList(idDesig);
+
+            if (param != null)
+            {
+                if (banderaCambiarTipoGlob == true)
+                {
+                    tipoAct = param.tipo;
+                }
+
+                MethodActGen.Emit(OpCodes.Ldarg, param.var.Position);
+
+            }
 
             if (localVar != null)
             {
